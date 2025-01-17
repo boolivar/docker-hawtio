@@ -1,0 +1,24 @@
+plugins {
+    id "com.bmuschko.docker-remote-api" version "6.7.0"
+}
+
+repositories {
+    mavenCentral()
+}
+
+configurations {
+    hawtio {
+        canBeConsumed = false
+        canBeResolved = false
+        transitive = false
+    }
+}
+
+dependencies {
+    hawtio "io.hawt:hawtio-jbang:3.0.0"
+}
+
+tasks.register("buildImage", com.bmuschko.gradle.docker.tasks.image.DockerBuildImage) {
+    inputDir = rootDir
+    images = ["boolivar/hawtio:${configurations.hawtio.dependencies.version[0]}"]
+}
