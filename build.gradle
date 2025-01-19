@@ -19,7 +19,8 @@ dependencies {
 }
 
 tasks.register("buildImage", com.bmuschko.gradle.docker.tasks.image.DockerBuildImage) {
+    def hawtioVersion = configurations.hawtio.dependencies.version[0]
     inputDir = rootDir
-    images = ["boolivar/hawtio:${configurations.hawtio.dependencies.version[0]}"]
-    buildArgs = [JAVA_VERSION: javaVersion]
+    images = ["boolivar/hawtio:$hawtioVersion"]
+    buildArgs = [HAWTIO_VERSION: "hawtio-$hawtioVersion", JAVA_VERSION: javaVersion]
 }
