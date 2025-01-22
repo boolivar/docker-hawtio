@@ -3,6 +3,9 @@ ARG JAVA_VERSION=latest
 
 FROM eclipse-temurin:$JAVA_VERSION
 
+LABEL org.opencontainers.image.title="hawtio"
+LABEL org.opencontainers.image.source="https://github.com/boolivar/docker-hawtio"
+
 ARG HAWTIO_VERSION=
 ARG JBANG_VERSION=
 
