@@ -19,6 +19,13 @@ dependencies {
     hawtio "io.hawt:hawtio-jbang:3.0.0"
 }
 
+docker {
+    registryCredentials {
+        username = dockerhubUser
+        password = dockerhubPass
+    }
+}
+
 version configurations.hawtio.dependencies.version[0]
 
 final image = "boolivar/hawtio:$version"
