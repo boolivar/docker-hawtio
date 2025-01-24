@@ -21,14 +21,20 @@ dependencies {
 
 version configurations.hawtio.dependencies.version[0]
 
+final image = "boolivar/hawtio:$version"
+
 tasks.named("build") {
     dependsOn "buildImage"
 }
 
 tasks.register("buildImage", com.bmuschko.gradle.docker.tasks.image.DockerBuildImage) {
     inputDir = rootDir
-    images = ["boolivar/hawtio:$version"]
+    images = [image]
     buildArgs = [HAWTIO_VERSION: "hawtio-$version", JAVA_VERSION: javaVersion]
+}
+
+tasks.register("dockerPushImage", com.bmuschko.gradle.docker.tasks.image.DockerPushImage) {
+    images = [image]
 }
 
 tasks.register("version") {
