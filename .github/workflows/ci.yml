@@ -21,3 +21,12 @@ jobs:
       uses: gradle/actions/setup-gradle@v4
     - name: Build Image
       run: ./gradlew build
+    - name: Release Version
+      id: release
+      if: ${{ github.ref_name == 'master' || startsWith(github.ref_name, 'release/') }}
+      run: echo 'RELEASE_VERSION='`./gradlew version` >> '$GITHUB_OUTPUT'
+    - name: Print Version
+      if: ${{ steps.release.outputs.RELEASE_VERSION }}
+      env:
+        RELEASE_VERSION: ${{ steps.release.outputs.RELEASE_VERSION }}
+      run: echo 'Release $RELEASE_VERSION'
