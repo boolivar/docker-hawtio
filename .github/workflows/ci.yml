@@ -21,11 +21,14 @@ jobs:
       uses: gradle/actions/setup-gradle@v4
     - name: Build Image
       run: ./gradlew build
+    - name: List Tags
+      id: tags
+      run: echo "HEAD=`git tag --points-at HEAD | tr '\n' ' '`" >> "$GITHUB_OUTPUT"
     - name: Push Image
       id: release
+      if: ${{ !steps.tags.outputs.HEAD && (github.ref_name == 'master' || startsWith(github.ref_name, 'release/')) }}
       env:
         DOCKERHUB_SECRET: ${{ secrets.DOCKERHUB_SECRET }}
-      if: ${{ github.ref_name == 'master' || startsWith(github.ref_name, 'release/') }}
       run: echo "RELEASE_VERSION=`./gradlew -q version`" >> "$GITHUB_OUTPUT" && ./gradlew -PdockerhubUser=boolivar -PdockerhubPass=$DOCKERHUB_SECRET dockerPushImage --dry-run
     - name: Tag Release
       if: ${{ steps.release.outputs.RELEASE_VERSION }}
