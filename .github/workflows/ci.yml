@@ -21,12 +21,14 @@ jobs:
       uses: gradle/actions/setup-gradle@v4
     - name: Build Image
       run: ./gradlew build
-    - name: Release Version
+    - name: Push Image
       id: release
       if: ${{ github.ref_name == 'master' || startsWith(github.ref_name, 'release/') }}
-      run: echo "RELEASE_VERSION=`./gradlew -q version`" >> "$GITHUB_OUTPUT"
-    - name: Print Version
+      run: echo "RELEASE_VERSION=`./gradlew -q version`" >> "$GITHUB_OUTPUT" && ./gradlew dockerPushImage --dry-run
+    - name: Tag Release
       if: ${{ steps.release.outputs.RELEASE_VERSION }}
       env:
         RELEASE_VERSION: ${{ steps.release.outputs.RELEASE_VERSION }}
-      run: echo "Release $RELEASE_VERSION"
+      run: |
+        git config user.name "GitHub Action" && git config user.email "2944216+boolivar@users.noreply.github.com"
+        git tag -m "Release $RELEASE_VERSION" -a "$RELEASE_VERSION-`git tag -l "$RELEASE_VERSION-*" | wc -l`" && git tag -f $RELEASE_VERSION && git push --force --tags
