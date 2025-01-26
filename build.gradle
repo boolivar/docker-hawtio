@@ -30,8 +30,10 @@ version configurations.hawtio.dependencies.version[0]
 
 final image = "boolivar/hawtio:$version"
 
-tasks.named("build") {
-    dependsOn "dockerBuildImage"
+tasks.register("version") {
+    doLast {
+        print version
+    }
 }
 
 tasks.register("dockerBuildImage", com.bmuschko.gradle.docker.tasks.image.DockerBuildImage) {
@@ -44,8 +46,45 @@ tasks.register("dockerPushImage", com.bmuschko.gradle.docker.tasks.image.DockerP
     images = [image]
 }
 
-tasks.register("version") {
-    doLast {
-        print version
+tasks.register("createContainer", com.bmuschko.gradle.docker.tasks.container.DockerCreateContainer) {
+    targetImageId image
+    hostConfig.with {
+        portBindings = ["8080:8080"]
+        autoRemove = true
     }
+}
+
+tasks.register("startContainer", com.bmuschko.gradle.docker.tasks.container.DockerStartContainer) {
+    dependsOn createContainer
+    targetContainerId createContainer.getContainerId()
+}
+
+tasks.register("stopContainer", com.bmuschko.gradle.docker.tasks.container.DockerStopContainer) {
+    targetContainerId createContainer.getContainerId()
+}
+
+tasks.register("testContainer") {
+    dependsOn startContainer
+    finalizedBy stopContainer
+    doLast {
+        def error = null
+        for (int i = 0; i < 10; ++i) {
+            try {
+                assert new URL("http://localhost:8080/hawtio").openConnection().responseCode == 200
+                return
+            } catch (Exception e) {
+                error = e
+                Thread.sleep(1000)
+            }
+        }
+        throw error
+    }
+}
+
+tasks.named("build") {
+    dependsOn dockerBuildImage
+}
+
+tasks.named("check") {
+    dependsOn testContainer
 }
