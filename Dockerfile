@@ -14,6 +14,7 @@ ENTRYPOINT ["hawtio"]
 
 LABEL org.opencontainers.image.title="hawtio"
 LABEL org.opencontainers.image.source="https://github.com/boolivar/docker-hawtio"
+LABEL org.opencontainers.image.licenses="MIT"
 
 RUN    JBANG_DOWNLOAD_VERSION=$JBANG_VERSION curl -Ls https://sh.jbang.dev | bash -s - app setup
 RUN    jbang trust add https://github.com/hawtio/hawtio/ \
