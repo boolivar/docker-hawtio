@@ -20,7 +20,7 @@ jobs:
     - name: Setup Gradle
       uses: gradle/actions/setup-gradle@v4
     - name: Build Image
-      run: ./gradlew build
+      run: ./gradlew -PcurrentRevision=`git rev-parse --short=10 HEAD` build
     - name: List Tags
       id: tags
       run: echo "HEAD=`git tag --points-at HEAD | tr '\n' ' '`" >> "$GITHUB_OUTPUT"
