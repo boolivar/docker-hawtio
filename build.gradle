@@ -47,6 +47,7 @@ tasks.register("dockerPushImage", com.bmuschko.gradle.docker.tasks.image.DockerP
 }
 
 tasks.register("createContainer", com.bmuschko.gradle.docker.tasks.container.DockerCreateContainer) {
+    mustRunAfter dockerBuildImage
     targetImageId image
     hostConfig.with {
         portBindings = ["8080:8080"]
@@ -81,7 +82,7 @@ tasks.register("testContainer") {
     }
 }
 
-tasks.named("build") {
+tasks.named("assemble") {
     dependsOn dockerBuildImage
 }
 
