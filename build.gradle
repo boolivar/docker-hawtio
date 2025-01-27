@@ -40,6 +40,10 @@ tasks.register("dockerBuildImage", com.bmuschko.gradle.docker.tasks.image.Docker
     inputDir = rootDir
     images = [image]
     buildArgs = [HAWTIO_VERSION: "hawtio-$version", JAVA_VERSION: javaVersion]
+    labels = [
+            "org.opencontainers.image.version": version,
+            "org.opencontainers.image.created": Instant.now().truncatedTo(java.time.temporal.ChronoUnit.MILLIS).toString()
+        ].plus(currentRevision ? ["org.opencontainers.image.revision": currentRevision] : [:])
 }
 
 tasks.register("dockerPushImage", com.bmuschko.gradle.docker.tasks.image.DockerPushImage) {
