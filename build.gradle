@@ -30,6 +30,8 @@ version configurations.hawtio.dependencies.version[0]
 
 final image = "boolivar/hawtio:$version"
 
+final imageList = [image].plus(latestTag.toBoolean() ? ["boolivar/hawtio:latest"] : [])
+
 tasks.register("version") {
     doLast {
         print version
@@ -38,7 +40,7 @@ tasks.register("version") {
 
 tasks.register("dockerBuildImage", com.bmuschko.gradle.docker.tasks.image.DockerBuildImage) {
     inputDir = rootDir
-    images = [image]
+    images = imageList
     buildArgs = [HAWTIO_VERSION: "hawtio-$version", JAVA_VERSION: javaVersion]
     labels = [
             "org.opencontainers.image.version": version,
@@ -47,7 +49,7 @@ tasks.register("dockerBuildImage", com.bmuschko.gradle.docker.tasks.image.Docker
 }
 
 tasks.register("dockerPushImage", com.bmuschko.gradle.docker.tasks.image.DockerPushImage) {
-    images = [image]
+    images = imageList
 }
 
 tasks.register("createContainer", com.bmuschko.gradle.docker.tasks.container.DockerCreateContainer) {
