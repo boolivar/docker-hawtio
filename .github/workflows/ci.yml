@@ -32,7 +32,7 @@ jobs:
       env:
         ORG_GRADLE_PROJECT_dockerhubUser: boolivar
         ORG_GRADLE_PROJECT_dockerhubPass: ${{ secrets.DOCKERHUB_SECRET }}
-      run: echo "RELEASE_VERSION=`./gradlew -q version`" >> "$GITHUB_OUTPUT" && ./gradlew dockerPushImage --dry-run
+      run: echo "RELEASE_VERSION=`./gradlew -q version`" >> "$GITHUB_OUTPUT" && ./gradlew dockerPushImage
     - name: Tag Release
       if: ${{ steps.release.outputs.RELEASE_VERSION }}
       env:
