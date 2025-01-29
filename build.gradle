@@ -28,9 +28,7 @@ docker {
 
 version configurations.hawtio.dependencies.version[0]
 
-final image = "boolivar/hawtio:$version"
-
-final imageList = [image].plus(latestTag.toBoolean() ? ["boolivar/hawtio:latest"] : [])
+final imageList = (tags ? tags.split(",") : [version]).collect { "boolivar/hawtio:${it.trim()}" }
 
 tasks.register("version") {
     doLast {
@@ -54,7 +52,7 @@ tasks.register("dockerPushImage", com.bmuschko.gradle.docker.tasks.image.DockerP
 
 tasks.register("createContainer", com.bmuschko.gradle.docker.tasks.container.DockerCreateContainer) {
     mustRunAfter dockerBuildImage
-    targetImageId image
+    targetImageId imageList[0]
     hostConfig.with {
         portBindings = ["8080:8080"]
         autoRemove = true
