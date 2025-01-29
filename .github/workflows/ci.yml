@@ -29,7 +29,7 @@ jobs:
       if: ${{ !steps.tags.outputs.HEAD && (github.ref_name == 'master' || startsWith(github.ref_name, 'release/')) }}
       env:
         DOCKERHUB_SECRET: ${{ secrets.DOCKERHUB_SECRET }}
-      run: echo "RELEASE_VERSION=`./gradlew -q version`" >> "$GITHUB_OUTPUT" && ./gradlew -PdockerhubUser=boolivar -PdockerhubPass=$DOCKERHUB_SECRET dockerPushImage --dry-run
+      run: echo "RELEASE_VERSION=`./gradlew -q version`" >> "$GITHUB_OUTPUT" && ./gradlew -PdockerhubUser=boolivar -PdockerhubPass=$DOCKERHUB_SECRET -PlatestTag=${{ github.ref_name == 'master' }} dockerPushImage --dry-run
     - name: Tag Release
       if: ${{ steps.release.outputs.RELEASE_VERSION }}
       env:
