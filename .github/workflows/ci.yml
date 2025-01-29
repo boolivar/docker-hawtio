@@ -6,6 +6,8 @@ permissions:
 jobs:
   build:
     runs-on: ubuntu-latest
+    env:
+      ORG_GRADLE_PROJECT_latestTag: ${{ github.ref_name == 'master' }}
     steps:
     - name: Checkout
       uses: actions/checkout@v4
@@ -28,8 +30,9 @@ jobs:
       id: release
       if: ${{ !steps.tags.outputs.HEAD && (github.ref_name == 'master' || startsWith(github.ref_name, 'release/')) }}
       env:
-        DOCKERHUB_SECRET: ${{ secrets.DOCKERHUB_SECRET }}
-      run: echo "RELEASE_VERSION=`./gradlew -q version`" >> "$GITHUB_OUTPUT" && ./gradlew -PdockerhubUser=boolivar -PdockerhubPass=$DOCKERHUB_SECRET -PlatestTag=${{ github.ref_name == 'master' }} dockerPushImage --dry-run
+        ORG_GRADLE_PROJECT_dockerhubUser: boolivar
+        ORG_GRADLE_PROJECT_dockerhubPass: ${{ secrets.DOCKERHUB_SECRET }}
+      run: echo "RELEASE_VERSION=`./gradlew -q version`" >> "$GITHUB_OUTPUT" && ./gradlew dockerPushImage --dry-run
     - name: Tag Release
       if: ${{ steps.release.outputs.RELEASE_VERSION }}
       env:
