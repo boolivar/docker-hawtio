@@ -16,6 +16,7 @@ LABEL org.opencontainers.image.title="hawtio"
 LABEL org.opencontainers.image.source="https://github.com/boolivar/docker-hawtio"
 LABEL org.opencontainers.image.licenses="MIT"
 
-RUN    JBANG_DOWNLOAD_VERSION=$JBANG_VERSION curl -Ls https://sh.jbang.dev | bash -s - app setup
+RUN    JBANG_DOWNLOAD_VERSION=$JBANG_VERSION bash --version || apk add --no-cache bash \
+    && wget -qO - https://sh.jbang.dev | bash -s - app setup
 RUN    jbang trust add https://github.com/hawtio/hawtio/ \
     && jbang app install hawtio@hawtio/hawtio/$HAWTIO_VERSION
