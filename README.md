@@ -15,3 +15,16 @@ Container entrypoint supports Hawtio CLI [configuration options](https://hawt.io
 ```
 docker run boolivar/hawtio:latest -V
 ```
+## Image Variants
+
+### `boolivar/hawtio:latest`
+
+Release with the greatest version from `boolivar/hawtio:<version>`
+
+### `boolivar/hawtio:<version>`
+
+Image based on `eclipse-temurin:21` with [jbang](https://www.jbang.dev/) installed to run hawtio.
+
+### `boolivar/hawtio:<version>-alpine`
+
+Image is based on `eclipse-temurin:21-alpine`, with `bash` and [jbang](https://www.jbang.dev/) installed to run hawtio.
