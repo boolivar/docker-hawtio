@@ -27,4 +27,4 @@ Image based on `eclipse-temurin:21` with [jbang](https://www.jbang.dev/) install
 
 ### `boolivar/hawtio:<version>-alpine`
 
-Image is based on `eclipse-temurin:21-alpine`, with `bash` and [jbang](https://www.jbang.dev/) installed to run hawtio.
+Image is based on `eclipse-temurin:21-alpine` with `bash` and [jbang](https://www.jbang.dev/) installed to run hawtio.
