@@ -7,7 +7,7 @@ jobs:
   build:
     runs-on: ubuntu-latest
     env:
-      ORG_GRADLE_PROJECT_latestTag: ${{ github.ref_name == 'master' }}
+      LATEST_TAG: ${{ github.ref_name == 'master' && ',latest' || '' }}
     steps:
     - name: Checkout
       uses: actions/checkout@v4
@@ -21,8 +21,12 @@ jobs:
         distribution: 'temurin'
     - name: Setup Gradle
       uses: gradle/actions/setup-gradle@v4
+    - name: Hawtio Version
+      run: echo "HAWTIO_VERSION=`./gradlew -q version`" >> "$GITHUB_ENV"
     - name: Build Image
-      run: ./gradlew -PcurrentRevision=`git rev-parse --short=10 HEAD` build
+      run: |
+        ./gradlew -PcurrentRevision=`git rev-parse --short=10 HEAD` -Ptags=$HAWTIO_VERSION$LATEST_TAG build
+        ./gradlew -PcurrentRevision=`git rev-parse --short=10 HEAD` -Ptags=$HAWTIO_VERSION-alpine -PjavaVersion=21-alpine build
     - name: List Tags
       id: tags
       run: echo "HEAD=`git tag --points-at HEAD | tr '\n' ' '`" >> "$GITHUB_OUTPUT"
@@ -32,7 +36,9 @@ jobs:
       env:
         ORG_GRADLE_PROJECT_dockerhubUser: boolivar
         ORG_GRADLE_PROJECT_dockerhubPass: ${{ secrets.DOCKERHUB_SECRET }}
-      run: echo "RELEASE_VERSION=`./gradlew -q version`" >> "$GITHUB_OUTPUT" && ./gradlew dockerPushImage
+      run: |
+        echo "RELEASE_VERSION=$HAWTIO_VERSION" >> "$GITHUB_OUTPUT"
+        ./gradlew -Ptags=$HAWTIO_VERSION,$HAWTIO_VERSION-alpine$LATEST_TAG dockerPushImage
     - name: Tag Release
       if: ${{ steps.release.outputs.RELEASE_VERSION }}
       env:
