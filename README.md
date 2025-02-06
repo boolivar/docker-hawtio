@@ -1,7 +1,7 @@
 # Hawtio Docker Image
 
 [![CI](https://github.com/boolivar/docker-hawtio/actions/workflows/ci.yml/badge.svg)](https://github.com/boolivar/docker-hawtio/actions/workflows/ci.yml)
-[![Dockerhub](https://img.shields.io/docker/v/boolivar/hawtio)](https://hub.docker.com/repository/docker/boolivar/hawtio/general)
+[![Dockerhub](https://img.shields.io/docker/v/boolivar/hawtio)](https://hub.docker.com/r/boolivar/hawtio)
 
 Docker image for https://hawt.io web console
 
