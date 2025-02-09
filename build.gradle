@@ -53,6 +53,7 @@ tasks.register("dockerPushImage", com.bmuschko.gradle.docker.tasks.image.DockerP
 tasks.register("createContainer", com.bmuschko.gradle.docker.tasks.container.DockerCreateContainer) {
     mustRunAfter dockerBuildImage
     targetImageId imageList[0]
+    cmd = ["--host=0.0.0.0"]
     hostConfig.with {
         portBindings = ["8080:8080"]
         autoRemove = true
