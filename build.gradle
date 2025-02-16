@@ -16,7 +16,7 @@ configurations {
 }
 
 dependencies {
-    hawtio "io.hawt:hawtio-jbang:3.0.2"
+    hawtio "io.hawt:hawtio-jbang:4.0.0"
 }
 
 docker {
@@ -28,7 +28,10 @@ docker {
 
 version configurations.hawtio.dependencies.version[0]
 
-final imageList = (tags ? tags.split(",") : [version]).collect { "boolivar/hawtio:${it.trim()}" }
+ext {
+    testContainerName = "docker-hawtio-test"
+    imageList = (tags ? tags.split(",") : [version]).collect { "boolivar/hawtio:${it.trim()}" }
+}
 
 tasks.register("version") {
     doLast {
@@ -51,8 +54,10 @@ tasks.register("dockerPushImage", com.bmuschko.gradle.docker.tasks.image.DockerP
 }
 
 tasks.register("createContainer", com.bmuschko.gradle.docker.tasks.container.DockerCreateContainer) {
+    containerName = testContainerName
     mustRunAfter dockerBuildImage
     targetImageId imageList[0]
+    cmd = ["--host=0.0.0.0"]
     hostConfig.with {
         portBindings = ["8080:8080"]
         autoRemove = true
@@ -61,11 +66,11 @@ tasks.register("createContainer", com.bmuschko.gradle.docker.tasks.container.Doc
 
 tasks.register("startContainer", com.bmuschko.gradle.docker.tasks.container.DockerStartContainer) {
     dependsOn createContainer
-    targetContainerId createContainer.getContainerId()
+    containerId = testContainerName
 }
 
 tasks.register("stopContainer", com.bmuschko.gradle.docker.tasks.container.DockerStopContainer) {
-    targetContainerId createContainer.getContainerId()
+    containerId = testContainerName
 }
 
 tasks.register("testContainer") {
