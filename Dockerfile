@@ -26,10 +26,12 @@ RUN    bash --version || apk add --no-cache bash \
     && chown -R $USERNAME:$GROUPNAME /home/$USERNAME
 
 USER $USERNAME
-ENV PATH=/home/$USERNAME/.jbang/bin:$PATH
+ENV HAWTIO_VERSION=$HAWTIO_VERSION PATH=/home/$USERNAME/.jbang/bin:$PATH
 WORKDIR /home/$USERNAME/$WORK_DIR
+
+COPY hawtio.java .
 
 RUN    JBANG_DOWNLOAD_VERSION=$JBANG_VERSION wget -qO - https://sh.jbang.dev | bash -s - app setup \
     && jbang trust add https://github.com/hawtio/hawtio/ \
-    && jbang app install hawtio@hawtio/hawtio/$HAWTIO_VERSION \
+    && if [[ -z "$HAWTIO_VERSION" ]]; then jbang app install hawtio@hawtio/hawtio; else jbang app install hawtio.java; fi \
     && jbang config set --file=. offline true
