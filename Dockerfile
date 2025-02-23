@@ -19,6 +19,8 @@ LABEL org.opencontainers.image.title="hawtio"
 LABEL org.opencontainers.image.source="https://github.com/boolivar/docker-hawtio"
 LABEL org.opencontainers.image.licenses="MIT"
 
+RUN    test -n "$HAWTIO_VERSION" # build-arg must be set
+
 RUN    bash --version || apk add --no-cache bash \
     && addgroup --gid $USER_GID $GROUPNAME \
     && adduser --disabled-password --gecos=$USERNAME --ingroup=$GROUPNAME --uid=$USER_UID $USERNAME \
