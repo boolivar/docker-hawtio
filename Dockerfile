@@ -5,7 +5,7 @@ FROM eclipse-temurin:$JAVA_VERSION
 
 EXPOSE 8080
 
-ARG HAWTIO_VERSION=
+ARG HAWTIO_VERSION
 ARG JBANG_VERSION=
 ARG USERNAME=java
 ARG GROUPNAME=java
@@ -19,6 +19,8 @@ LABEL org.opencontainers.image.title="hawtio"
 LABEL org.opencontainers.image.source="https://github.com/boolivar/docker-hawtio"
 LABEL org.opencontainers.image.licenses="MIT"
 
+RUN    test -n "$HAWTIO_VERSION" # build-arg must be set
+
 RUN    bash --version || apk add --no-cache bash \
     && addgroup --gid $USER_GID $GROUPNAME \
     && adduser --disabled-password --gecos=$USERNAME --ingroup=$GROUPNAME --uid=$USER_UID $USERNAME \
@@ -26,10 +28,11 @@ RUN    bash --version || apk add --no-cache bash \
     && chown -R $USERNAME:$GROUPNAME /home/$USERNAME
 
 USER $USERNAME
-ENV PATH=/home/$USERNAME/.jbang/bin:$PATH
+ENV HAWTIO_VERSION=$HAWTIO_VERSION PATH=/home/$USERNAME/.jbang/bin:$PATH
 WORKDIR /home/$USERNAME/$WORK_DIR
 
+COPY hawtio.java .
+
 RUN    JBANG_DOWNLOAD_VERSION=$JBANG_VERSION wget -qO - https://sh.jbang.dev | bash -s - app setup \
-    && jbang trust add https://github.com/hawtio/hawtio/ \
-    && jbang app install hawtio@hawtio/hawtio/$HAWTIO_VERSION \
+    && jbang app install hawtio.java \
     && jbang config set --file=. offline true
