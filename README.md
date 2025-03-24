@@ -28,3 +28,16 @@ Image based on `eclipse-temurin:21` with [jbang](https://www.jbang.dev/) install
 ### `boolivar/hawtio:<version>-alpine`
 
 Image is based on `eclipse-temurin:21-alpine` with `bash` and [jbang](https://www.jbang.dev/) installed to run hawtio.
+
+## Build image
+
+`HAWTIO_VERSION` build-arg is required to build image using Dockerfile:
+```bash
+docker build -t hawtio:4.3.0 --build-arg HAWTIO_VERSION=4.3.0 .
+```
+See [Dockerfile](Dockerfile) for supported build args.
+
+Java is required to build image using gradle:
+```bash
+./gradlew build
+```
