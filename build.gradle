@@ -42,7 +42,7 @@ tasks.register("version") {
 tasks.register("dockerBuildImage", com.bmuschko.gradle.docker.tasks.image.DockerBuildImage) {
     inputDir = rootDir
     images = imageList
-    buildArgs = [HAWTIO_VERSION: "hawtio-$version", JAVA_VERSION: javaVersion]
+    buildArgs = [HAWTIO_VERSION: version, JAVA_VERSION: javaVersion]
     labels = [
             "org.opencontainers.image.version": version,
             "org.opencontainers.image.created": Instant.now().truncatedTo(java.time.temporal.ChronoUnit.MILLIS).toString()
