@@ -16,7 +16,7 @@ configurations {
 }
 
 dependencies {
-    hawtio "io.hawt:hawtio-jbang:5.0.1"
+    hawtio "io.hawt:hawtio-jbang:5.1.0"
 }
 
 docker {
